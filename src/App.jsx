@@ -59,14 +59,23 @@ const App = () => {
 	const calculateWPM = () => {
 		// const arrayOfTypedWords = typedWords.split(' ')
 
+		const arrayOfTypedWords = typedWords.split(' ')
+		const arrayOfWords = words.split(' ')
+		
+		console.log(arrayOfTypedWords)
+		console.log(arrayOfWords)
+		
 		let totalCar = 0
-		for (let i = 0; i < words.length; i++) {
-			if (typedWords.charAt(i) === words.charAt(i))
+		for (let i = 0; i < arrayOfWords.length; i++) {
+			if (arrayOfTypedWords[i] === arrayOfWords[i])
 			{
-				totalCar += 1
+				
+				totalCar += arrayOfWords[i].length
 			}
 		}
-		return (((totalCar)/5)/(finalTime/60))
+		
+		console.log(totalCar)
+		return (((totalCar+(arrayOfTypedWords.length-1))/5)/(finalTime/60))
 	}
 
 	const handleTypeChange = event => {
@@ -114,14 +123,17 @@ const App = () => {
 	return (
 		<div>
 			{currentChar}
-			<div className='flex flex-row px-8 py-2 spacex-2'>
+			<div className='flex flex-row px-14 space-x-2'>
 				
-				<img src={logo} className='w-12'/>
-
-				<h1 className='text-5xl px-2 text-neutral-200'>orangutan type</h1>
+				<img src={logo} className='w-12 h-7 my-5'/>
+				<div className='flex flex-col -space-y-3'>
+					<p className='text-stone-500 text-sm' >monkey write</p>
+					<p className='text-5xl text-neutral-200'>orangutantype</p>
+				</div>
+				
 			</div>
 			
-			<SettingsBar changeWordCount={count => {setWordCount(count); restartGame()}}/>
+			
 			
 			
 			
@@ -131,13 +143,14 @@ const App = () => {
 				!gameFinished
 					?
 					<div>
-						<div className='flex flex-row justify-center'>
+						<SettingsBar changeWordCount={count => {setWordCount(count); restartGame()}}/>
+						<div className='flex flex-row justify-center mx-40 my-10'>
 							<div>
 								{
 									words.split('').map((char, index) => {
 										return (<span 
 														 key={index} 
-														 className={`text-3xl ${currentChar === index ? 'underline decoration-green' : ''} ${currentChar-1 >= index ? `${typedWords.charAt(index) === words.charAt(index) ? 'text-stone-100' : 'text-red-600'}` : 'text-stone-500' }`}
+														 className={`text-3xl font-mono ${currentChar === index ? 'underline decoration-green' : ''} ${currentChar-1 >= index ? `${typedWords.charAt(index) === words.charAt(index) ? 'text-stone-100' : 'text-red-600'}` : 'text-stone-500' }`}
 														>
 														{char}
 														</span>)
@@ -162,7 +175,7 @@ const App = () => {
 
 			<div className='flex justify-center'>
 				<button className="btn btn-square my-20" onClick={restartGame}>
-					<img className='w-20 h-20' src={restartLogo}/>
+					<img className='h-10' src={restartLogo}/>
 				</button>
 			</div>
 			

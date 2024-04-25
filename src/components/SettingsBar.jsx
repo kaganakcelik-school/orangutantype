@@ -1,6 +1,6 @@
 const SettingsBar = props => {
 	return (
-		<div className='flex flex-row justify-center space-x-10 bg-neutral-800 text-stone-500 mx-14 my-5'>
+		<div className='flex flex-row justify-center space-x-10 bg-neutral-800 text-stone-500 mx-60 py-2 rounded-xl'>
 			<p>words:</p>
 			<button onClick={() => props.changeWordCount(10)}>10</button>
 			<button onClick={() => props.changeWordCount(30)}>30</button>
