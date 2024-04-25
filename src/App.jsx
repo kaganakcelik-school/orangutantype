@@ -5,6 +5,7 @@ import logo from './assets/logokeybr.png'
 import wordBank from './db.js'
 import restartLogo from './assets/restartimage.png'
 import FinishedScreen from './components/FinishedScreen.jsx'
+import SettingsBar from './components/SettingsBar.jsx'
 
 //
 //https://random-word.ryanrk.com/api/en/word/random/10/?maxLength=7
@@ -14,7 +15,8 @@ const App = () => {
 	const [words, setWords] = useState('')
 	const [typedWords, setTypedWords] = useState('')
 	const [gameFinished, setGameFinished] = useState(false)
-
+	const [wordCount, setWordCount] = useState(10)
+	
 	const [currentChar, setCurrentChar] = useState(0)
 	
 	const inputRef = useRef(null)
@@ -44,12 +46,11 @@ const App = () => {
 	
 	useEffect(() => {
 		initializeWords()
-	}, [])
+	}, [wordCount])
 
 	const initializeWords = () => {
 		let newWords = ''
-		for (let i = 0; i < 10; i++) {
-			// newWords = [...newWords, wordBank[Math.floor(Math.random() * wordBank.length)]]
+		for (let i = 0; i < wordCount; i++) {
 			newWords = newWords.concat(wordBank[Math.floor(Math.random() * wordBank.length)] + ' ')
 		}
 		setWords(newWords)
@@ -91,7 +92,7 @@ const App = () => {
 		// let stringWords = ''
 		// words.forEach(word => {stringWords = stringWords.concat(word + ' ')})
 		// console.log(newTypedWords.length, stringWords.length)
-		if (newTypedWords.length === words.length && !gameFinished) {
+		if (newTypedWords.length === words.length-1 && !gameFinished) {
 				console.log('finished')
 				setGameFinished(true)
 				setFinalTime(timer)
@@ -120,7 +121,7 @@ const App = () => {
 				<h1 className='text-5xl px-2 text-neutral-200'>orangutan type</h1>
 			</div>
 			
-			<p className='text-sm text-center'>u cant change the settings yet ill add it later</p>
+			<SettingsBar changeWordCount={count => {setWordCount(count); restartGame()}}/>
 			
 			
 			
