@@ -16,24 +16,36 @@ const App = () => {
 	const [typedWords, setTypedWords] = useState('')
 	const [gameFinished, setGameFinished] = useState(false)
 	const [wordCount, setWordCount] = useState(10)
-	
 	const [currentChar, setCurrentChar] = useState(0)
+	const [finalTime, setFinalTime] = useState(0)
+	const [topScore, setTopScore] = useState(0)
 	
 	const inputRef = useRef(null)
-	
-	const [finalTime, setFinalTime] = useState(0)
 	
 	const { timer, start } = useCountup()
 
 	useEffect(() => {
 		document.addEventListener('keydown', detectKeyDown, true)
+		updateTopScore()
 	}, [])
+
+	const updateTopScore = () => {
+		axios
+			.get('https://orangutantype-server.onrender.com/api/scores')
+			.then(response => {
+				setTopScore(Math.round(Math.max(...response.data.map(o => o.score))))
+			})
+	}
 
 	const detectKeyDown = e => {
 		if (isLetter(e.key))
 		{
+			console.log(gameFinished)
 			// console.log('a')
-			if (!gameFinished) inputRef.current.focus()
+			if (!gameFinished) {
+				
+				inputRef.current.focus()
+			}
 		}
 	}
 
@@ -75,7 +87,19 @@ const App = () => {
 		}
 		
 		console.log(totalCar)
-		return (((totalCar+(arrayOfTypedWords.length-1))/5)/(finalTime/60))
+		const WPM = (((totalCar+(arrayOfTypedWords.length-1))/5)/(finalTime/60))
+
+		const scoreObject = {
+			score: WPM
+		}
+
+		axios
+			.post('https://orangutantype-server.onrender.com/api/scores', scoreObject)
+			.then(response => {
+				updateTopScore()
+			})
+		
+		return WPM
 	}
 
 	const handleTypeChange = event => {
@@ -170,7 +194,7 @@ const App = () => {
 						</div>
 					</div>
 					:
-					<FinishedScreen WPM={calculateWPM()}/>
+					<FinishedScreen WPM={calculateWPM()} topScore={topScore}/>
 			}
 
 			<div className='flex justify-center'>
