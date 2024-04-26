@@ -1,7 +1,7 @@
 import { useState, useEffect, startTransition, useRef } from 'react'
 import axios from 'axios'
 import useCountup from './useCountup.jsx'
-import logo from './assets/logokeybr.png'
+import logo from './assets/logo.png'
 import wordBank from './db.js'
 import restartLogo from './assets/restartimage.png'
 import FinishedScreen from './components/FinishedScreen.jsx'
@@ -136,14 +136,12 @@ const App = () => {
 	
 	return (
 		<div>
-			{String(gameFinished)}
-			{currentChar}
-			<div className='flex flex-row px-14 space-x-2'>
+			<div className='flex flex-row px-14 space-x-2 py-4'>
 				
-				<img src={logo} className='w-12 h-7 my-5'/>
+				<img src={logo} className='w-14 h-14'/>
 				<div className='flex flex-col -space-y-3'>
 					<p className='text-stone-500 text-sm' >monkey write</p>
-					<p className='text-5xl text-neutral-200'>orangutantype</p>
+					<p className='text-5xl text-brown'>orangutantype</p>
 				</div>
 				
 			</div>
