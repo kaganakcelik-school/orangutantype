@@ -23,11 +23,11 @@ const App = () => {
 	const inputRef = useRef(null)
 	
 	const { timer, start } = useCountup()
-
+	
 	useEffect(() => {
 		document.addEventListener('keydown', detectKeyDown, true)
 		updateTopScore()
-	}, [])
+	}, [gameFinished])
 
 	const updateTopScore = () => {
 		axios
@@ -40,16 +40,11 @@ const App = () => {
 	const detectKeyDown = e => {
 		if (isLetter(e.key))
 		{
-			console.log(gameFinished)
-			// console.log('a')
-			if (!gameFinished) {
-				
-				inputRef.current.focus()
-			}
+			inputRef.current.focus()
 		}
 	}
 
-	function isLetter(str) {
+	const isLetter = (str) => {
 		if (str.length === 1 && str.match(/[a-z]/i)) {
 			return true
 		}
@@ -74,8 +69,6 @@ const App = () => {
 		const arrayOfTypedWords = typedWords.split(' ')
 		const arrayOfWords = words.split(' ')
 		
-		console.log(arrayOfTypedWords)
-		console.log(arrayOfWords)
 		
 		let totalCar = 0
 		for (let i = 0; i < arrayOfWords.length; i++) {
@@ -86,7 +79,6 @@ const App = () => {
 			}
 		}
 		
-		console.log(totalCar)
 		const WPM = (((totalCar+(arrayOfTypedWords.length-1))/5)/(finalTime/60))
 
 		const scoreObject = {
@@ -111,7 +103,6 @@ const App = () => {
 		setCurrentChar(event.target.value.length)
 		
 		if (typedWords.length === 0) {
-			console.log('started')
 			start(0)
 		}
 		//not working yet cuz of the if thing below this second conditional not working cuz yea
@@ -126,7 +117,6 @@ const App = () => {
 		// words.forEach(word => {stringWords = stringWords.concat(word + ' ')})
 		// console.log(newTypedWords.length, stringWords.length)
 		if (newTypedWords.length === words.length-1 && !gameFinished) {
-				console.log('finished')
 				setGameFinished(true)
 				setFinalTime(timer)
 				start(null)
@@ -146,6 +136,7 @@ const App = () => {
 	
 	return (
 		<div>
+			{String(gameFinished)}
 			{currentChar}
 			<div className='flex flex-row px-14 space-x-2'>
 				
@@ -157,12 +148,8 @@ const App = () => {
 				
 			</div>
 			
-			
-			
-			
-			
-			
 			<br/>
+			
 			{
 				!gameFinished
 					?
@@ -182,20 +169,20 @@ const App = () => {
 								}
 							</div>
 						</div>
-						
-						<div>
-							<input 
-								className='opacity-0 z--900 absolute'
-								value={typedWords}
-								onChange={handleTypeChange}
-								ref={inputRef}
-								autoFocus
-								/>
-						</div>
+
 					</div>
 					:
 					<FinishedScreen WPM={calculateWPM()} topScore={topScore}/>
 			}
+			<div>
+				<input 
+					className='opacity-0 z--900 absolute'
+					value={typedWords}
+					onChange={handleTypeChange}
+					ref={inputRef}
+					autoFocus
+					/>
+			</div>
 
 			<div className='flex justify-center'>
 				<button className="btn btn-square my-20" onClick={restartGame}>
