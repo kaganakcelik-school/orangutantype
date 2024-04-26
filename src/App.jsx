@@ -2,7 +2,8 @@ import { useState, useEffect, startTransition, useRef } from 'react'
 import axios from 'axios'
 import useCountup from './useCountup.jsx'
 import logo from './assets/logo.png'
-import wordBank from './db.js'
+import sentenceBank from './sentencedb.js'
+import wordBank from './worddb.js'
 import restartLogo from './assets/restartimage.png'
 import FinishedScreen from './components/FinishedScreen.jsx'
 import SettingsBar from './components/SettingsBar.jsx'
@@ -19,6 +20,8 @@ const App = () => {
 	const [currentChar, setCurrentChar] = useState(0)
 	const [finalTime, setFinalTime] = useState(0)
 	const [topScore, setTopScore] = useState(0)
+
+	const [randomWords, setRandomWords] = useState(false)
 	
 	const inputRef = useRef(null)
 	
@@ -56,11 +59,29 @@ const App = () => {
 	}, [wordCount])
 
 	const initializeWords = () => {
-		let newWords = ''
-		for (let i = 0; i < wordCount; i++) {
-			newWords = newWords.concat(wordBank[Math.floor(Math.random() * wordBank.length)] + ' ')
-		}
-		setWords(newWords)
+		console.log(randomWords)
+		// if (randomWords) {
+			let newWords = ''
+			for (let i = 0; i < wordCount; i++) {
+				newWords = newWords.concat(wordBank[Math.floor(Math.random() * wordBank.length)] + ' ')
+			}
+			setWords(newWords)
+			
+		// } else {
+			
+		// 	const sentence = sentenceBank[Math.floor(Math.random() * wordBank.length)]
+		// 	let newSentence = sentence.split('')
+
+		// 	newSentence = newSentence.map(letter => letter.match(/^[ A-Za-z]+$/) ? letter : '')
+		// 	let newWords = ''
+		// 	for (let i = 0; i < newSentence.length; i++) {
+		// 		newWords = newWords.concat(newSentence[i])
+		// 	}
+		// 	newWords = newWords.toLowerCase()
+		// 	setWords(newWords)
+		// }
+		
+		
 	}
 
 	const calculateWPM = () => {
@@ -152,9 +173,9 @@ const App = () => {
 				!gameFinished
 					?
 					<div>
-						<SettingsBar changeWordCount={count => {setWordCount(count); restartGame()}}/>
-						<div className='flex flex-row justify-center mx-40 my-10'>
-							<div>
+						<SettingsBar changeWordCount={count => {setWordCount(count); restartGame()}} toggleRandomWords={() => {console.log('need to add')}} />
+						<div className='flex flex-row justify-center my-10'>
+							<div className='w-3/4'>
 								{
 									words.split('').map((char, index) => {
 										return (<span 
@@ -174,7 +195,7 @@ const App = () => {
 			}
 			<div>
 				<input 
-					className='opacity-0 z--900 absolute'
+					className='opacity-0 z--900 absolute top-0'
 					value={typedWords}
 					onChange={handleTypeChange}
 					ref={inputRef}
