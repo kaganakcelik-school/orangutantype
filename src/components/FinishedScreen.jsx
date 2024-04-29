@@ -4,7 +4,7 @@ const FinishedScreen = props => {
 	return (
 		<div>
 			<div className='flex flex-row p-10 justify-center'>
-					
+
 					<div>
 						<p className='text-3xl text-stone-500'>
 							wpm
@@ -25,10 +25,10 @@ const FinishedScreen = props => {
 
 			</div>
 
-			
+
 		</div>
-		
-		
+
+
 	)
 }
 

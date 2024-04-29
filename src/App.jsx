@@ -12,7 +12,7 @@ import SettingsBar from './components/SettingsBar.jsx'
 //https://random-word.ryanrk.com/api/en/word/random/10/?maxLength=7
 
 const App = () => {
-	
+
 	const [words, setWords] = useState('')
 	const [typedWords, setTypedWords] = useState('')
 	const [gameFinished, setGameFinished] = useState(false)
@@ -22,11 +22,11 @@ const App = () => {
 	const [topScore, setTopScore] = useState(0)
 	const [correctWords, setCorrectWords] = useState([])
 	const [randomWords, setRandomWords] = useState(false)
-	
+
 	const inputRef = useRef(null)
-	
+
 	const { timer, start } = useCountup()
-	
+
 	useEffect(() => {
 		document.addEventListener('keydown', detectKeyDown, true)
 		updateTopScore()
@@ -53,7 +53,7 @@ const App = () => {
 		}
 		return false
 	}
-	
+
 	useEffect(() => {
 		initializeWords()
 	}, [wordCount, randomWords])
@@ -63,22 +63,22 @@ const App = () => {
 		console.log('initializing words')
 		if (rWords) {
 
-		
+
 			let newWords = ''
 			for (let i = 0; i < wordCount; i++) {
 				newWords = newWords.concat(wordBank[Math.floor(Math.random() * wordBank.length)] + ' ')
 			}
 			setWords(newWords)
-			setCorrectWords(Array.apply(null, Array(newWords.length)).map(function () {}))
+			// setCorrectWords(Array.apply(null, Array(newWords.length)).map(function () {}))
 
-		
+
 		} else {
 			const sentence = sentenceBank[Math.floor(Math.random() * sentenceBank.length)]
 
-			
-		
+
+
 			let newSentence = sentence.split('')
-		
+
 			newSentence = newSentence.map(letter => letter.match(/^[ A-Za-z]+$/) ? letter : '')
 			let newWords = ''
 			for (let i = 0; i < newSentence.length; i++) {
@@ -86,9 +86,9 @@ const App = () => {
 			}
 			newWords = newWords.toLowerCase()
 			setWords(newWords)
-			setCorrectWords(Array.apply(null, Array(newWords.length)).map(function () {}))
+			// setCorrectWords(Array.apply(null, Array(newWords.length)).map(function () {}))
 		}
-		
+
 	}
 
 	const calculateWPM = () => {
@@ -96,17 +96,17 @@ const App = () => {
 
 		const arrayOfTypedWords = typedWords.split(' ')
 		const arrayOfWords = words.split(' ')
-		
-		
+
+
 		let totalCar = 0
 		for (let i = 0; i < arrayOfWords.length; i++) {
 			if (arrayOfTypedWords[i] === arrayOfWords[i])
 			{
-				
+
 				totalCar += arrayOfWords[i].length
 			}
 		}
-		
+
 		const WPM = (((totalCar+(arrayOfTypedWords.length-1))/5)/(finalTime/60))
 
 		const scoreObject = {
@@ -118,7 +118,7 @@ const App = () => {
 			.then(response => {
 				updateTopScore()
 			})
-		
+
 		return WPM
 	}
 
@@ -130,33 +130,33 @@ const App = () => {
 			let tempCorrectWords = correctWords
 			tempCorrectWords[event.target.value.length-1] = false
 			setCorrectWords(tempCorrectWords)
+			console.log(tempCorrectWords)
 			return
 		}
-		console.log(correctWords[event.target.value.length-1])
-		
-		console.log(correctWords[event.target.value.length-1])
+
 		if (correctWords[event.target.value.length-1] !== false) {
 			let tempCorrectWords = correctWords
 			tempCorrectWords[event.target.value.length-1] = true
-			console.log('setting it to true')
 			setCorrectWords(tempCorrectWords)
 		}
-		
+
 		setTypedWords(event.target.value)
 		const newTypedWords = event.target.value
 
 		setCurrentChar(event.target.value.length)
-		
-		
+
+
 		if (typedWords.length === 0) {
 			start(0)
 		}
-		
+
 		if (newTypedWords.length === words.length-1 && !gameFinished) {
 				setGameFinished(true)
 				setFinalTime(timer)
 				start(null)
 		}
+
+
 	}	
 
 	const restartGame = () => {
@@ -165,6 +165,7 @@ const App = () => {
 		setFinalTime(0)
 		initializeWords()
 		setCurrentChar(0)
+		setCorrectWords([])
 
 		//vvv make this more clean
 		inputRef.current.focus()
@@ -179,39 +180,50 @@ const App = () => {
 		setFinalTime(0)
 		// initializeWords()
 		setCurrentChar(0)
+		setCorrectWords([])
 
 		//vvv make this more clean
 		inputRef.current.focus()
-		
+
 	}
-	
+
+	useEffect(() => {
+		setInterval(() => {
+			console.log(correctWords)
+		}, 2000)
+	}, [])
+
 	return (
 		<div>
-			{randomWords.toString()}
+
 			<div className='flex flex-row px-14 space-x-2 py-4'>
-				
+
 				<img src={logo} className='w-14 h-14'/>
 				<div className='flex flex-col -space-y-3'>
 					<p className='text-stone-500 text-sm' >monkey write</p>
 					<p className='text-5xl text-brown'>orangutantype</p>
 				</div>
-				
+
 			</div>
-			
+
 			<br/>
-			
+
 			{
 				!gameFinished
 					?
 					<div>
-						<SettingsBar changeWordCount={count => {setWordCount(count); restartGame()}} toggleRandomWords={switchRandomWords} />
+						<SettingsBar changeWordCount={count => {setWordCount(count); restartGame()}} toggleRandomWords={switchRandomWords} randomWords={randomWords} />
 						<div className='flex flex-row justify-center my-10'>
 							<div className='w-3/4'>
 								{
 									words.split('').map((char, index) => {
 										return (<span 
 														 key={index} 
-														 className={`text-3xl font-mono ${currentChar === index ? 'underline decoration-green' : ''} ${currentChar-1 >= index ? `${correctWords[index] === true ? 'text-stone-100' : 'text-red-600'}` : 'text-stone-500' }`}
+														 className={`text-3xl font-mono 
+															${currentChar === index ? `underline  ${correctWords[index] === false ? '' : ''}` : ''} 
+															${currentChar-1 >= index ?
+																`${correctWords[index] === true ? 'text-stone-100' : 'text-red-600'}` : 
+																'text-stone-500' }`}
 														>
 														{char}
 														</span>)
@@ -238,7 +250,7 @@ const App = () => {
 					<img className='h-10' src={restartLogo}/>
 				</button>
 			</div>
-			
+
 		</div>
 	)
 }
