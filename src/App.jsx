@@ -20,7 +20,7 @@ const App = () => {
 	const [currentChar, setCurrentChar] = useState(0)
 	const [finalTime, setFinalTime] = useState(0)
 	const [topScore, setTopScore] = useState(0)
-
+	const [correctWords, setCorrectWords] = useState([])
 	const [randomWords, setRandomWords] = useState(false)
 	
 	const inputRef = useRef(null)
@@ -69,7 +69,7 @@ const App = () => {
 				newWords = newWords.concat(wordBank[Math.floor(Math.random() * wordBank.length)] + ' ')
 			}
 			setWords(newWords)
-
+			setCorrectWords(Array.apply(null, Array(newWords.length)).map(function () {}))
 
 		
 		} else {
@@ -86,8 +86,8 @@ const App = () => {
 			}
 			newWords = newWords.toLowerCase()
 			setWords(newWords)
+			setCorrectWords(Array.apply(null, Array(newWords.length)).map(function () {}))
 		}
-		
 		
 	}
 
@@ -123,10 +123,24 @@ const App = () => {
 	}
 
 	const handleTypeChange = event => {
+		// console.log(correctWords[event.target.value.length-1])
+
 		if (!(event.target.value.charAt(event.target.value.length-1) === words.charAt(event.target.value.length-1))) {
+
+			let tempCorrectWords = correctWords
+			tempCorrectWords[event.target.value.length-1] = false
+			setCorrectWords(tempCorrectWords)
 			return
 		}
-
+		console.log(correctWords[event.target.value.length-1])
+		
+		console.log(correctWords[event.target.value.length-1])
+		if (correctWords[event.target.value.length-1] !== false) {
+			let tempCorrectWords = correctWords
+			tempCorrectWords[event.target.value.length-1] = true
+			console.log('setting it to true')
+			setCorrectWords(tempCorrectWords)
+		}
 		
 		setTypedWords(event.target.value)
 		const newTypedWords = event.target.value
@@ -197,7 +211,7 @@ const App = () => {
 									words.split('').map((char, index) => {
 										return (<span 
 														 key={index} 
-														 className={`text-3xl font-mono ${currentChar === index ? 'underline decoration-green' : ''} ${currentChar-1 >= index ? `${typedWords.charAt(index) === words.charAt(index) ? 'text-stone-100' : 'text-red-600'}` : 'text-stone-500' }`}
+														 className={`text-3xl font-mono ${currentChar === index ? 'underline decoration-green' : ''} ${currentChar-1 >= index ? `${correctWords[index] === true ? 'text-stone-100' : 'text-red-600'}` : 'text-stone-500' }`}
 														>
 														{char}
 														</span>)
