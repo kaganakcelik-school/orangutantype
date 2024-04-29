@@ -2,8 +2,8 @@ import { useState, useEffect, startTransition, useRef } from 'react'
 import axios from 'axios'
 import useCountup from './useCountup.jsx'
 import logo from './assets/logo.png'
-import sentenceBank from './sentencedb.js'
-import wordBank from './worddb.js'
+import sentenceBank from './data/sentencedb.js'
+import wordBank from './data/worddb.js'
 import restartLogo from './assets/restartimage.png'
 import FinishedScreen from './components/FinishedScreen.jsx'
 import SettingsBar from './components/SettingsBar.jsx'
@@ -56,30 +56,37 @@ const App = () => {
 	
 	useEffect(() => {
 		initializeWords()
-	}, [wordCount])
+	}, [wordCount, randomWords])
 
 	const initializeWords = () => {
-		console.log(randomWords)
-		// if (randomWords) {
+		const rWords = randomWords 
+		console.log('initializing words')
+		if (rWords) {
+
+		
 			let newWords = ''
 			for (let i = 0; i < wordCount; i++) {
 				newWords = newWords.concat(wordBank[Math.floor(Math.random() * wordBank.length)] + ' ')
 			}
 			setWords(newWords)
-			
-		// } else {
-			
-		// 	const sentence = sentenceBank[Math.floor(Math.random() * wordBank.length)]
-		// 	let newSentence = sentence.split('')
 
-		// 	newSentence = newSentence.map(letter => letter.match(/^[ A-Za-z]+$/) ? letter : '')
-		// 	let newWords = ''
-		// 	for (let i = 0; i < newSentence.length; i++) {
-		// 		newWords = newWords.concat(newSentence[i])
-		// 	}
-		// 	newWords = newWords.toLowerCase()
-		// 	setWords(newWords)
-		// }
+
+		
+		} else {
+			const sentence = sentenceBank[Math.floor(Math.random() * sentenceBank.length)]
+
+			
+		
+			let newSentence = sentence.split('')
+		
+			newSentence = newSentence.map(letter => letter.match(/^[ A-Za-z]+$/) ? letter : '')
+			let newWords = ''
+			for (let i = 0; i < newSentence.length; i++) {
+				newWords = newWords.concat(newSentence[i])
+			}
+			newWords = newWords.toLowerCase()
+			setWords(newWords)
+		}
 		
 		
 	}
@@ -116,27 +123,21 @@ const App = () => {
 	}
 
 	const handleTypeChange = event => {
+		if (!(event.target.value.charAt(event.target.value.length-1) === words.charAt(event.target.value.length-1))) {
+			return
+		}
+
+		
 		setTypedWords(event.target.value)
 		const newTypedWords = event.target.value
-		const arrayOfTypedWords = typedWords.split(' ')
-		const checkWords = event.target.value.split('')
 
 		setCurrentChar(event.target.value.length)
+		
 		
 		if (typedWords.length === 0) {
 			start(0)
 		}
-		//not working yet cuz of the if thing below this second conditional not working cuz yea
-		// if (arrayOfTypedWords.length === words.length && arrayOfTypedWords[9] === words[9] && !gameFinished) {
-		// 	console.log('you typed all the words')
-		// 	setGameFinished(true)
-		// 	setFinalTime(timer)
-		// 	start(null)
-		// }
 		
-		// let stringWords = ''
-		// words.forEach(word => {stringWords = stringWords.concat(word + ' ')})
-		// console.log(newTypedWords.length, stringWords.length)
 		if (newTypedWords.length === words.length-1 && !gameFinished) {
 				setGameFinished(true)
 				setFinalTime(timer)
@@ -154,9 +155,25 @@ const App = () => {
 		//vvv make this more clean
 		inputRef.current.focus()
 	}
+
+	const switchRandomWords = () => {
+		setRandomWords(!randomWords); 
+
+
+		setGameFinished(false)
+		setTypedWords('')
+		setFinalTime(0)
+		// initializeWords()
+		setCurrentChar(0)
+
+		//vvv make this more clean
+		inputRef.current.focus()
+		
+	}
 	
 	return (
 		<div>
+			{randomWords.toString()}
 			<div className='flex flex-row px-14 space-x-2 py-4'>
 				
 				<img src={logo} className='w-14 h-14'/>
@@ -173,7 +190,7 @@ const App = () => {
 				!gameFinished
 					?
 					<div>
-						<SettingsBar changeWordCount={count => {setWordCount(count); restartGame()}} toggleRandomWords={() => {console.log('need to add')}} />
+						<SettingsBar changeWordCount={count => {setWordCount(count); restartGame()}} toggleRandomWords={switchRandomWords} />
 						<div className='flex flex-row justify-center my-10'>
 							<div className='w-3/4'>
 								{
@@ -199,7 +216,6 @@ const App = () => {
 					value={typedWords}
 					onChange={handleTypeChange}
 					ref={inputRef}
-					autoFocus
 					/>
 			</div>
 
