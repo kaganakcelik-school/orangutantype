@@ -1,3 +1,5 @@
+//flex flex-col justify-content items-center
+
 const SettingsBar = props => {
 	return (
 		<div className='flex flex-col justify-content items-center'>
@@ -10,11 +12,11 @@ const SettingsBar = props => {
 							<p>words:</p>
 							<button onClick={() => props.changeWordCount(10)}>10</button>
 							<button onClick={() => props.changeWordCount(30)}>30</button>
-							<button onClick={() => props.changeWordCount(500)}>50</button> 
+							<button onClick={() => props.changeWordCount(50)}>50</button> 
 						</div> 
 						:
 						<div>
-							<p>this a test</p>
+							<p>sentence length coming soon</p>
 						</div>
 					}
 
