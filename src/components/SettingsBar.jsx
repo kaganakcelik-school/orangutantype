@@ -13,7 +13,7 @@ const SettingsBar = props => {
 							<button onClick={() => props.changeWordCount(10)}>10</button>
 							<button onClick={() => props.changeWordCount(30)}>30</button>
 							<button onClick={() => props.changeWordCount(50)}>50</button> 
-						</div> 
+						</div>
 						:
 						<div>
 							<p>sentence length coming soon</p>
